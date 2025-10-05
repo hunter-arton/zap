@@ -6,10 +6,19 @@ on:
       - "v*.*.*"
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build-desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "macos-latest"
+            args: "--target universal-apple-darwin"
+          - platform: "windows-latest"
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -17,13 +26,15 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Rust
+      - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build Tauri App
+      - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -31,60 +42,34 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "Zap v__VERSION__"
           releaseBody: |
-            ## 🎉 Zap Desktop App - Testing Release
+            ## 🎉 Zap Desktop App
 
-            **This is an unsigned build for testing with friends.**
+            **Testing build for feedback** (unsigned)
 
-            ### Windows Installation:
-            1. Download the `.msi` file below
-            2. Double-click to install
-            3. You may see "Windows protected your PC" warning
-            4. Click "More info" → "Run anyway"
+            ### Downloads:
+            - **Windows**: `.msi` installer below
+            - **macOS**: `.dmg` Universal (Intel + Apple Silicon) below
 
-            ### macOS Installation:
-            1. Download the `.dmg` file below
-            2. Open the `.dmg`
-            3. Drag Zap to Applications
-            4. Right-click Zap → Open (first time only)
-            5. Click "Open" on the warning dialog
+            ### Installation:
 
-            ### CLI Installation (Separate):
+            **Windows:**
+            1. Download `.msi` file
+            2. Run installer
+            3. Click through "Unknown publisher" warning
+
+            **macOS:**
+            1. Download `.dmg` file
+            2. Open `.dmg` → Drag to Applications
+            3. Right-click Zap → Open (first time)
+            4. Click "Open" on warning
+
+            ### CLI (separate):
             ```bash
             pip install zap-cli
             ```
 
             ---
-            **🧪 Testing build - feedback welcome!**
+            🧪 **Testing release - feedback welcome!**
           releaseDraft: true
           prerelease: false
-
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install Rust with targets
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-apple-darwin,x86_64-apple-darwin
-
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build Tauri App
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: ${{ github.ref_name }}
-          releaseName: "Zap v__VERSION__"
-          releaseBody: "See release notes"
-          releaseDraft: true
-          prerelease: false
-          args: --target universal-apple-darwin
+          args: ${{ matrix.args }}
