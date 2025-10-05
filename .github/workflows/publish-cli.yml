@@ -1,0 +1,67 @@
+name: Publish CLI to PyPI
+
+on:
+  push:
+    tags:
+      - "cli-v*.*.*"
+
+jobs:
+  publish-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build CLI package
+        run: |
+          cd zap-cli
+          python -m build
+
+      - name: Check package quality
+        run: |
+          cd zap-cli
+          twine check dist/*
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          cd zap-cli
+          twine upload dist/*
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Zap CLI ${{ github.ref_name }}"
+          body: |
+            ## 🐍 Zap CLI Release
+
+            Install or upgrade:
+            ```bash
+            pip install --upgrade zap-cli
+            ```
+
+            ### Quick Start:
+            ```bash
+            zap list
+            zap use <session-name>
+            zap run -- npm start
+            zap status
+            ```
+
+            See [README](https://github.com/${{ github.repository }}/tree/main/zap-cli) for full documentation.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

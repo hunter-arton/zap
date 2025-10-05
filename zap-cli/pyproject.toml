@@ -1,0 +1,44 @@
+# path : zap-cli/pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zap-cli"
+version = "0.1.0"
+description = "CLI companion for Zap credential manager - inject secrets as environment variables"
+readme = "README.md"
+authors = [{ name = "Your Name", email = "your.email@example.com" }]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = ["click>=8.0.0", "cryptography>=41.0.0", "rich>=13.0.0"]
+keywords = ["credentials", "secrets", "environment", "variables", "development"]
+
+[project.urls]
+Homepage = "https://github.com/hunter-arton/zap"
+Documentation = "https://github.com/hunter-arton/zap#readme"
+Repository = "https://github.com/hunter-arton/zap"
+Issues = "https://github.com/hunter-arton/zap/issues"
+
+[project.scripts]
+zap = "zap_cli.cli:cli"
+
+[tool.setuptools]
+packages = ["zap_cli"]
+
+[tool.setuptools.package-data]
+zap_cli = ["py.typed"]

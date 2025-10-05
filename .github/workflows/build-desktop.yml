@@ -1,0 +1,90 @@
+name: Build Desktop App
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build Tauri App
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Zap v__VERSION__"
+          releaseBody: |
+            ## 🎉 Zap Desktop App - Testing Release
+
+            **This is an unsigned build for testing with friends.**
+
+            ### Windows Installation:
+            1. Download the `.msi` file below
+            2. Double-click to install
+            3. You may see "Windows protected your PC" warning
+            4. Click "More info" → "Run anyway"
+
+            ### macOS Installation:
+            1. Download the `.dmg` file below
+            2. Open the `.dmg`
+            3. Drag Zap to Applications
+            4. Right-click Zap → Open (first time only)
+            5. Click "Open" on the warning dialog
+
+            ### CLI Installation (Separate):
+            ```bash
+            pip install zap-cli
+            ```
+
+            ---
+            **🧪 Testing build - feedback welcome!**
+          releaseDraft: true
+          prerelease: false
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Rust with targets
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build Tauri App
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Zap v__VERSION__"
+          releaseBody: "See release notes"
+          releaseDraft: true
+          prerelease: false
+          args: --target universal-apple-darwin

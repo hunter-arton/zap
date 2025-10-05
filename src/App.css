@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+.text-security-disc {
+    -webkit-text-security: disc;
+    -moz-text-security: disc;
+    /* text-security: disc; */
+}
+
+.text-security-none {
+    -webkit-text-security: none;
+    -moz-text-security: none;
+    /* text-security: none; */
+}
+
+/* Simple custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(75, 85, 99, 0.1);
+    /* gray-600 equivalent */
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    /* white with opacity */
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+    /* white with more opacity */
+}

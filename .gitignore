@@ -1,0 +1,116 @@
+# ===================================
+# ZAP PROJECT - GITIGNORE
+# ===================================
+
+# ===== FRONTEND (Node.js/npm/Vite) =====
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+dist-ssr/
+.next/
+out/
+
+# Environment files
+*.local
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ===== RUST / TAURI (src-tauri) =====
+# Build artifacts
+target/
+
+
+# Backup files
+*.rs.bk
+
+# ===== PYTHON CLI (zap-cli) =====
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+zap-cli/venv/
+zap-cli/env/
+zap-cli/.venv/
+zap-cli/ENV/
+
+# Distribution / packaging
+zap-cli/build/
+zap-cli/dist/
+zap-cli/*.egg-info/
+zap-cli/.eggs/
+zap-cli/MANIFEST
+
+# Testing & coverage
+zap-cli/.pytest_cache/
+zap-cli/.coverage
+zap-cli/htmlcov/
+
+# ===== EDITORS & IDEs =====
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+
+# JetBrains
+.idea/
+*.iml
+
+# Visual Studio
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.vscode
+
+# Vim/Emacs
+*.sw?
+*.swp
+*.swo
+*~
+
+# ===== OS FILES =====
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows  
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+# ===== DEVELOPMENT & TESTING =====
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Test data
+test_data/
+*.db
+*.db-shm
+*.db-wal
+
+# ===== SENSITIVE (Never commit!) =====
+*.key
+*.pem
+*.p12
+secrets/
+.secrets/
