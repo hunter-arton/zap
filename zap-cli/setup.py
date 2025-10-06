@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="zapc",
-    version="0.1.0",
+    version="0.1.1",
     author="Hunter Arton",
     author_email="arton.hunter@gmail.com",
     description="CLI companion for Zap credential manager - inject secrets as environment variables",

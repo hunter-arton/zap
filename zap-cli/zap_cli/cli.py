@@ -8,7 +8,7 @@ import os
 import sys
 import subprocess
 from pathlib import Path
-from typing import Optional, List  # REMOVED Dict - not needed
+from typing import Optional, List
 import click
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from rich.console import Console
@@ -17,7 +17,7 @@ from rich.table import Table
 console = Console()
 
 # ================================
-# PATH RESOLUTION (matches Rust exactly)
+# PATH RESOLUTION
 # ================================
 
 APP_IDENTIFIER = "com.devtool.zap"
@@ -73,7 +73,7 @@ class SessionFile:
         try:
             with open(session_path, "r") as f:
                 return cls(json.load(f))
-        except (json.JSONDecodeError, KeyError, IOError):  # FIXED
+        except (json.JSONDecodeError, KeyError, IOError):
             return None
 
     @classmethod
@@ -137,9 +137,7 @@ class ProjectContext:
 
 def secret_name_to_env_var(secret_name: str, prefix: Optional[str] = None) -> str:
     """Convert secret name to environment variable name (matches Rust)"""
-    # Convert to uppercase and replace non-alphanumeric with underscore
     clean_name = "".join(c if c.isalnum() else "_" for c in secret_name.upper())
-    # Remove consecutive underscores
     clean_name = "_".join(filter(None, clean_name.split("_")))
 
     if prefix:
@@ -150,18 +148,15 @@ def secret_name_to_env_var(secret_name: str, prefix: Optional[str] = None) -> st
 
 def decrypt_secret(hex_encrypted_data: str, session_key: bytes) -> str:
     """Decrypt secret using AES-GCM (matches Rust implementation)"""
-    # Decode hex to get serialized EncryptedData
     serialized_data = bytes.fromhex(hex_encrypted_data)
     encrypted_data = json.loads(serialized_data)
 
-    # Extract components (matches Rust EncryptedData struct)
     cipher = bytes(encrypted_data["cipher"])
     nonce = bytes(encrypted_data["nonce"])
     tag = bytes(encrypted_data["tag"])
 
-    # Decrypt using AES-GCM
     aesgcm = AESGCM(session_key)
-    ciphertext = cipher + tag  # Reconstruct as in Rust
+    ciphertext = cipher + tag
     decrypted = aesgcm.decrypt(nonce, ciphertext, None)
 
     return decrypted.decode("utf-8")
@@ -173,7 +168,7 @@ def decrypt_secret(hex_encrypted_data: str, session_key: bytes) -> str:
 
 
 @click.group()
-@click.version_option(version="0.1.0")
+@click.version_option(version="0.1.1")
 def cli():
     """Zap CLI - Inject secrets as environment variables"""
     pass
@@ -188,7 +183,6 @@ def start():
         if sys.platform == "darwin":
             subprocess.run(["open", "-a", "Zap"], check=True)
         elif sys.platform == "win32":
-            # Try common Windows paths
             paths = ["Zap.exe", r"C:\Program Files\Zap\Zap.exe"]
             for path in paths:
                 try:
@@ -196,7 +190,7 @@ def start():
                     break
                 except (FileNotFoundError, OSError):
                     continue
-        else:  # Linux
+        else:
             subprocess.Popen(["zap"])
 
         console.print("✅ Zap app launched successfully!")
@@ -211,7 +205,6 @@ def start():
 def list(session_name: Optional[str]):
     """List all sessions or secrets in a specific session"""
     if session_name:
-        # List secrets in specific session
         session = SessionFile.load(session_name)
         if not session:
             console.print(f"[red]Session '{session_name}' not found[/red]")
@@ -232,7 +225,6 @@ def list(session_name: Optional[str]):
 
         console.print(f"\n[dim]({len(session.encrypted_secrets)} secrets total)[/dim]")
     else:
-        # List all sessions
         sessions = SessionFile.list_all()
 
         if not sessions:
@@ -242,7 +234,6 @@ def list(session_name: Optional[str]):
 
         console.print("\n[cyan bold]Active Zap Sessions[/cyan bold]\n")
 
-        # Check current project session
         context = ProjectContext.load()
         current_session = context.current_session if context else None
 
@@ -279,7 +270,6 @@ def use(session_name: str):
         console.print("[dim]Use 'zap list' to see available sessions[/dim]")
         sys.exit(1)
 
-    # Build list of available secrets as env var names
     available_secrets = [
         secret_name_to_env_var(name) for name in session.encrypted_secrets.keys()
     ]
@@ -360,7 +350,15 @@ def run(command, session, verbose, prefix):
         console.print(f"\n[cyan bold]Executing:[/cyan bold] {' '.join(command)}\n")
 
     # Execute command
-    result = subprocess.run(command, env=env)
+    # FIXED: Handle Windows batch files (npm, nodemon, yarn, etc.)
+    if sys.platform == "win32":
+        # On Windows, use shell=True to handle .cmd/.bat files
+        command_str = subprocess.list2cmdline(command)
+        result = subprocess.run(command_str, env=env, shell=True)
+    else:
+        # Unix systems: direct execution
+        result = subprocess.run(command, env=env)
+
     sys.exit(result.returncode)
 
 
@@ -376,7 +374,6 @@ def stop(session_name: str):
             f"[green]✓[/green] Session '[green bold]{session_name}[/green bold]' stopped"
         )
 
-        # Clear from project context if current
         context = ProjectContext.load()
         if context and context.current_session == session_name:
             (Path.cwd() / "zap.json").unlink(missing_ok=True)
@@ -407,7 +404,6 @@ def clear():
 
     console.print(f"[green]✓[/green] Cleared {cleared} session(s)")
 
-    # Clear project context
     (Path.cwd() / "zap.json").unlink(missing_ok=True)
     console.print("  [dim]Cleared from current project[/dim]")
 
