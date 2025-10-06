@@ -1,6 +1,6 @@
 # Zap CLI
 
-CLI companion for [Zap](https://github.com/yourusername/zap) credential manager - inject secrets from development sessions as environment variables.
+CLI companion for [Zap](https://github.com/hunter-arton/zap) credential manager - inject secrets from development sessions as environment variables.
 
 ## What is Zap?
 
@@ -166,6 +166,6 @@ MIT
 
 ## Links
 
-- [Zap Desktop App](https://github.com/yourusername/zap)
-- [Report Issues](https://github.com/yourusername/zap/issues)
-- [Documentation](https://github.com/yourusername/zap#readme)
+- [Zap Desktop App](https://github.com/hunter-arton/zap)
+- [Report Issues](https://github.com/hunter-arton/zap/issues)
+- [Documentation](https://github.com/hunter-arton/zap#readme)
