@@ -9,7 +9,7 @@ Zap is a secure credential manager with a desktop app that helps you manage API 
 ## Installation
 
 ```bash
-pip install zap-cli
+pip install zapc
 ```
 
 ## Quick Start

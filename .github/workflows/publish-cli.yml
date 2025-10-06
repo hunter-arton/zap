@@ -49,7 +49,7 @@ jobs:
 
             Install or upgrade:
             ```bash
-            pip install --upgrade zap-cli
+            pip install --upgrade zapc
             ```
 
             ### Quick Start:

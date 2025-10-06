@@ -59,13 +59,14 @@ jobs:
 
             **macOS:**
             1. Download `.dmg` file
-            2. Open `.dmg` → Drag to Applications
-            3. Right-click Zap → Open (first time)
-            4. Click "Open" on warning
+            2. Open `.dmg` → Drag Zap to Applications folder
+            3. **IMPORTANT**: Right-click Zap.app → Select "Open" (don't double-click!)
+            4. Click "Open" on the warning dialog
+            5. After first open, you can use normally
 
             ### CLI (separate):
             ```bash
-            pip install zap-cli
+            pip install zapc
             ```
 
             ---
