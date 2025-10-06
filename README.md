@@ -32,25 +32,41 @@ Zap is a modern credential management system designed for developers. It consist
 
 ### 1. Install Desktop App
 
-Download from [Releases](https://github.com/yourusername/zap/releases) or build from source:
+Download from [Releases](https://github.com/hunter-arton/zap/releases):
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/zap.git
-cd zap
+- **macOS**: Download `.dmg` file
+  - Open the `.dmg`
+  - Drag Zap to Applications
+  - **Right-click** → Open (first time only - unsigned build)
+  
+- **Windows**: Download `.msi` installer
+  - Run installer
+  - Click through "Unknown publisher" warning
 
-# Install frontend dependencies
-npm install
-
-# Build and run the desktop app
-npm run tauri dev
-```
+**Note**: Testing builds are unsigned. We'll add code signing before public launch.
 
 ### 2. Install CLI
 
 ```bash
-pip install zap-cli
+# macOS/Linux
+pip3 install zapc
+
+# Windows
+pip install zapc
 ```
+
+**macOS users**: You may need to add to PATH:
+```bash
+echo 'export PATH="$HOME/Library/Python/3.9/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+**Verify installation:**
+```bash
+zap --version
+```
+
+📖 **Detailed guide**: [CLI Installation Guide](./zap-cli/INSTALLATION.md)
 
 ### 3. Create Your First Session
 
@@ -152,8 +168,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📧 Support
 
-- 🐛 [Report Issues](https://github.com/yourusername/zap/issues)
-- 💬 [Discussions](https://github.com/yourusername/zap/discussions)
+- 🐛 [Report Issues](https://github.com/hunter-arton/zap/issues)
+- 💬 [Discussions](https://github.com/hunter-arton/zap/discussions)
 
 ---
 
